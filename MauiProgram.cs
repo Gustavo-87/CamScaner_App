@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using CamScanner.Data;
 
 namespace CamScanner;
 
@@ -19,6 +20,7 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
+builder.Services.AddSingleton<CamScannerDatabase>();
 		return builder.Build();
 	}
 }
