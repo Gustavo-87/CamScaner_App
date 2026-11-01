@@ -1,4 +1,4 @@
-# CamScaner — App de Supervisión en Campo
+# CamScanner — App de Supervisión en Campo
 
 ---
 
