@@ -125,7 +125,10 @@ dotnet publish src/CamScanner.csproj -f net10.0-android -c Release
 La compilación no implica que OCR, captura o exportación estén disponibles: no se encontraron en la versión inspeccionada.
 
 ## Gestión del proyecto
-El equipo utiliza Trello para asignar actividades, registrar avances, adjuntar evidencias y relacionar los cambios con commits.
+El seguimiento de actividades, tareas y avances del proyecto se realiza mediante Trello.
+
+- **Tablero / tarjeta:** [Criterios de aceptación y requisitos](https://trello.com/c/IPmWkZaN/2-criterios-de-aceptacion-y-requisitos)
+- **Repositorio:** https://github.com/Gustavo-87/CamScanner_App
 
 **Tablero Trello:** pendiente de agregar el enlace real.
 
