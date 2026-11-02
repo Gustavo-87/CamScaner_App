@@ -1,80 +1,93 @@
 # Informe de calidad — CamScanner
 
 ## 1. Objetivo
+Identificar el estado comprobable del producto, riesgos técnicos y aspectos de calidad que deben atenderse durante el desarrollo y la verificación de CamScanner.
 
-Identificar riesgos técnicos y funcionales, establecer aspectos de calidad relevantes y proponer acciones de prevención, verificación y mantenimiento para CamScanner, como parte de las actividades de Ingeniería de Software II.
+## 2. Alcance y limitaciones de la revisión
+Se revisaron los archivos compartidos: `CamScanner.csproj`, modelos `Documento` y `Lote`, `CamScannerDatabase.cs`, `MainPage.xaml`, `MainPage.xaml.cs`, `MauiProgram.cs`, `App.xaml`, `AppShell.xaml` y `Platforms/Android/AndroidManifest.xml`. También se ejecutó una búsqueda de referencias a OCR, cámara, selección de archivos y Excel en `src` (excluyendo `bin` y `obj`), sin coincidencias.
 
-## 2. Estado del producto
+Este diagnóstico se limita a los archivos y resultados suministrados. No equivale a una auditoría exhaustiva ni a pruebas de ejecución en dispositivo.
 
-De acuerdo con la información suministrada por el equipo, la aplicación se encuentra funcionalmente terminada. Este informe constituye una identificación inicial de riesgos y aspectos que deben verificarse y respaldarse con evidencias.
+## 3. Estado técnico comprobado
 
-No se registran métricas de rendimiento, defectos confirmados ni resultados de pruebas porque no se suministraron datos de ejecución. Estos campos deben actualizarse cuando se realicen las pruebas.
-
-## 3. Evaluación de calidad
-
-Se toman como referencia características de calidad pertinentes para una aplicación móvil: adecuación funcional, eficiencia de desempeño, compatibilidad, usabilidad, confiabilidad, seguridad, mantenibilidad y portabilidad.
-
-| Característica | Aspecto a evaluar | Evidencia sugerida |
+| Área | Evidencia | Resultado |
 |---|---|---|
-| Adecuación funcional | Que captura, OCR, selección, edición, gestión de lotes y exportación cumplan los requisitos. | Casos de prueba aprobados y demostración de cada flujo. |
-| Eficiencia de desempeño | Tiempo de OCR y exportación, consumo de memoria y respuesta de la interfaz. | Mediciones en dispositivos identificados y con conjuntos de imágenes definidos. |
-| Compatibilidad | Comportamiento en las versiones y dispositivos Android objetivo. | Matriz de dispositivos y resultados de ejecución. |
-| Usabilidad | Claridad de navegación, mensajes, revisión y corrección de datos. | Pruebas con usuarios y registro de observaciones. |
-| Confiabilidad | Manejo de errores, permisos denegados, interrupciones y persistencia. | Pruebas negativas, de recuperación y persistencia. |
-| Seguridad y privacidad | Protección de imágenes y datos locales, permisos y ausencia de exposición involuntaria. | Revisión de permisos, almacenamiento y flujo de datos. |
-| Mantenibilidad | Separación de responsabilidades, legibilidad y facilidad para corregir defectos. | Revisión de código y estructura del repositorio. |
-| Portabilidad | Facilidad para compilar y ejecutar en los entornos Android definidos. | Compilación reproducible y pruebas en dispositivos objetivo. |
+| Plataforma | `.csproj` declara `net10.0-android`, `UseMaui=true`. | Configuración inicial presente. |
+| SQLite | Paquete `sqlite-net-pcl` 1.11.285. | Dependencia declarada. |
+| Modelo Lote | Id, Nombre, FechaCreacion, Descripcion. | Presente. |
+| Modelo Documento | Id, LoteId, Nombre, RutaImagen, TextoExtraido, FechaCreacion. | Presente. |
+| Inicialización de datos | Creación de tablas `Lote` y `Documento`. | Implementada. |
+| Consulta de lotes | `ObtenerLotesAsync()`. | Implementada. |
+| Guardar lote | `GuardarLoteAsync()` inserta o actualiza. | Implementada. |
+| CRUD restante | No se encontraron métodos de eliminación ni persistencia de documentos en el archivo revisado. | No evidenciado. |
+| Interfaz | `MainPage.xaml` muestra plantilla, “Hello, World!” y contador. | Interfaz de negocio no evidenciada. |
+| OCR/cámara/importación | Búsqueda de referencias sin coincidencias. | No evidenciados. |
+| Excel | Sin referencias encontradas ni paquete Excel identificado en `.csproj`. | No evidenciado. |
+| Pruebas | No se identificó `tests/` en el listado `git ls-files` compartido. | No evidenciadas en ese listado. |
 
-## 4. Riesgos identificados
+## 4. Evaluación por características de calidad
 
-La valoración de probabilidad e impacto es preliminar y debe revisarse con los resultados reales de las pruebas.
+| Característica | Situación observada | Acción recomendada |
+|---|---|---|
+| Adecuación funcional | Interfaz de plantilla y persistencia parcial de lotes. | Implementar y verificar los flujos del alcance. |
+| Eficiencia de desempeño | Sin mediciones de OCR, imágenes o exportación. | Medir duración y consumo cuando se incorporen esas funciones. |
+| Compatibilidad | Se declara destino Android y API mínima 21; no hay resultados de dispositivos. | Probar emuladores y dispositivos objetivo. |
+| Usabilidad | La pantalla inspeccionada es la plantilla de MAUI. | Diseñar y evaluar captura, revisión, lotes y exportación. |
+| Confiabilidad | Capa de datos limitada; sin pruebas de recuperación aportadas. | Incorporar manejo de excepciones y pruebas de persistencia/integridad. |
+| Seguridad y privacidad | Base local en `FileSystem.AppDataDirectory`; manifiesto declara permisos de red. No se observó permiso de cámara en el manifiesto revisado. | Revisar permisos, almacenamiento y flujo de datos al implementar captura/OCR. |
+| Mantenibilidad | Separación inicial entre modelos, datos e interfaz. | Mantener responsabilidades separadas e incorporar servicios específicos. |
+| Portabilidad | `.csproj` declara destinos condicionados adicionales; alcance acordado Android. | Priorizar Android y documentar plataformas efectivamente soportadas. |
 
-| ID | Riesgo | Probabilidad | Impacto | Acción preventiva o correctiva |
+## 5. Riesgos identificados
+
+Valoraciones preliminares, sujetas a revisión con pruebas reales.
+
+| ID | Riesgo | Probabilidad | Impacto | Acción |
 |---|---|---|---|---|
-| R-01 | Imágenes borrosas, inclinadas, oscuras o de baja resolución pueden reducir la precisión del OCR. | Alta | Alto | Probar con diferentes condiciones de captura; informar cuando el reconocimiento sea parcial y permitir corrección manual. |
-| R-02 | El OCR local puede consumir recursos elevados en dispositivos con poca memoria o capacidad de procesamiento. | Media | Alto | Medir tiempos y consumo en dispositivos objetivo; evitar bloquear la interfaz y liberar recursos después del procesamiento. |
-| R-03 | La denegación de permisos de cámara o acceso a imágenes puede interrumpir la captura o importación. | Media | Medio | Validar permisos antes de iniciar la operación y presentar instrucciones claras al usuario. |
-| R-04 | Un error en SQLite puede ocasionar pérdida, inconsistencia o imposibilidad de consultar datos. | Media | Alto | Validar operaciones, controlar excepciones y probar persistencia e integridad de relaciones entre lotes y documentos. |
-| R-05 | La eliminación de un lote podría afectar documentos asociados si no se aplican reglas de integridad. | Media | Alto | Definir y probar el comportamiento de eliminación, incluyendo restricciones o eliminación relacionada cuando corresponda. |
-| R-06 | La exportación a Excel puede producir archivos incompletos, vacíos o con datos desordenados. | Media | Alto | Validar el contenido exportado con documentos individuales y lotes; comprobar apertura del archivo y correspondencia de datos. |
-| R-07 | El tamaño o cantidad de imágenes puede aumentar el tiempo de procesamiento y el consumo de memoria. | Media | Alto | Definir escenarios de carga representativos y medir el comportamiento con lotes pequeños y grandes. |
-| R-08 | Diferencias entre versiones o fabricantes Android pueden generar comportamientos distintos. | Media | Medio | Probar en más de una versión/dispositivo dentro del rango soportado y documentar compatibilidad. |
-| R-09 | Los datos extraídos pueden contener información sensible almacenada localmente. | Media | Alto | Revisar permisos y almacenamiento, limitar los datos conservados a los necesarios y evitar compartirlos sin acción del usuario. |
-| R-10 | Una dependencia OCR o de generación Excel puede presentar incompatibilidades o restricciones de licencia. | Baja/Media | Medio | Identificar las bibliotecas y versiones utilizadas, revisar licencias y validar compatibilidad con .NET 10 y Android. |
+| R-01 | Imágenes borrosas, inclinadas u oscuras reducen precisión OCR. | Alta | Alto | Probar condiciones variadas, permitir corrección manual y comunicar resultados parciales. |
+| R-02 | OCR local consume recursos en dispositivos limitados. | Media | Alto | Medir consumo/tiempo y evitar bloquear interfaz. |
+| R-03 | Permisos denegados o archivos incompatibles impiden captura/importación. | Media | Medio | Validar permisos y formatos y mostrar mensajes claros. |
+| R-04 | La capa SQLite no expone el CRUD completo requerido. | Alta | Alto | Completar operaciones para lotes y documentos y probarlas. |
+| R-05 | Eliminaciones pueden dejar relaciones lote-documento inconsistentes. | Media | Alto | Definir integridad referencial y probar lotes con documentos asociados. |
+| R-06 | La interfaz actual no ofrece los flujos de negocio. | Alta | Alto | Implementar pantallas de captura, revisión, lotes y exportación. |
+| R-07 | La exportación puede generar archivos incompletos o desordenados. | Media | Alto | Definir estructura Excel y validar exportaciones individuales y por lote. |
+| R-08 | Ausencia de pruebas automatizadas visibles dificulta detectar regresiones. | Media | Alto | Crear proyecto de pruebas y automatizar validaciones de modelos/persistencia. |
+| R-09 | La configuración de permisos Android puede no cubrir futuras capacidades. | Media | Medio | Revisar manifiesto y permisos en tiempo de ejecución. |
+| R-10 | Dependencias OCR/Excel pueden no ser compatibles o tener restricciones de licencia. | Media | Medio | Evaluar versiones, compatibilidad y licencias antes de integrarlas. |
 
-## 5. Aspectos de calidad y métricas propuestas
+## 6. Métricas propuestas
+No se suministraron resultados medidos. Recopilar:
+- Porcentaje de requisitos probados: requisitos con pruebas ejecutadas / requisitos totales × 100.
+- Porcentaje de pruebas aprobadas: casos aprobados / casos ejecutados × 100.
+- Tiempo de OCR y exportación en dispositivos identificados.
+- Exactitud OCR comparando resultados con transcripciones de referencia.
+- Persistencia tras cerrar y abrir la aplicación.
+- Defectos por severidad.
+- Compatibilidad por modelo y versión Android.
 
-Las métricas siguientes son propuestas para recopilar evidencia; no son resultados medidos ni umbrales ya aprobados.
+Los umbrales deben acordarse antes de interpretar las mediciones.
 
-| Métrica | Forma de medición | Registro requerido |
-|---|---|---|
-| Porcentaje de casos de prueba aprobados | Casos aprobados / casos ejecutados × 100. | Total ejecutado, aprobado y fallido. |
-| Tiempo de procesamiento OCR | Tiempo desde el inicio hasta la presentación del resultado. | Dispositivo, imagen, tamaño y duración. |
-| Tiempo de exportación | Tiempo desde la solicitud hasta la generación del archivo. | Cantidad de registros/documentos y duración. |
-| Persistencia | Comprobar registros después de cerrar y reabrir la aplicación. | Registros antes y después de reiniciar. |
-| Exactitud del OCR | Comparar el texto reconocido con una transcripción de referencia. | Texto esperado, texto obtenido y errores identificados. |
-| Defectos por severidad | Clasificar defectos encontrados por impacto. | Identificador, descripción, severidad y estado. |
-| Compatibilidad | Ejecución satisfactoria por versión/dispositivo Android. | Modelo, versión Android y resultado. |
+## 7. Hallazgos de revisión
 
-Para evaluar la exactitud del OCR puede utilizarse una muestra de documentos con texto de referencia y calcular la proporción de caracteres o palabras reconocidos correctamente. El equipo debe definir el método y el umbral de aceptación antes de interpretar los resultados.
+| ID | Hallazgo | Severidad sugerida | Evidencia |
+|---|---|---|---|
+| H-01 | La pantalla principal conserva la plantilla inicial de MAUI. | Alta | `MainPage.xaml` y `.cs`. |
+| H-02 | La capa revisada solo consulta y guarda/actualiza lotes. | Alta | `CamScannerDatabase.cs`. |
+| H-03 | No se encontraron referencias OCR, cámara, selección de archivos o Excel. | Alta | Búsqueda `grep` en `src`. |
+| H-04 | No se identificó carpeta de pruebas en el listado versionado compartido. | Media | Salida de `git ls-files`. |
 
-## 6. Registro de defectos
+Son hallazgos de revisión estática/documental, no defectos confirmados en ejecución.
 
-No se han suministrado defectos confirmados. Registrar aquí los hallazgos que se presenten durante la ejecución del plan de pruebas.
+## 8. Acciones de mejora
+1. Sustituir la interfaz de plantilla por los flujos de negocio.
+2. Completar CRUD para lotes y documentos.
+3. Incorporar captura e importación con permisos Android.
+4. Seleccionar e integrar OCR local y documentar paquete/versión.
+5. Incorporar selección y edición de texto reconocido.
+6. Seleccionar e integrar biblioteca Excel.
+7. Crear pruebas automatizadas y pruebas funcionales móviles.
+8. Registrar evidencias reales y actualizar estados de requisitos.
+9. Revisar permisos Android según las capacidades implementadas.
 
-| ID | Descripción del defecto | Severidad | Pasos para reproducir | Estado | Responsable |
-|---|---|---|---|---|---|
-| DEF-__ | Por registrar después de las pruebas. | Por determinar | Por registrar | Pendiente | Por asignar |
-
-## 7. Acciones de mantenimiento
-
-- Corregir los defectos detectados y repetir los casos de prueba relacionados.
-- Mantener actualizadas las dependencias de .NET MAUI, OCR y generación de Excel, verificando su compatibilidad.
-- Revisar el manejo de excepciones en cámara, importación, OCR, SQLite y exportación.
-- Mantener copias de seguridad de los datos de prueba y evitar incluir documentos reales o sensibles en el repositorio.
-- Revisar periódicamente la estructura del código para conservar la separación entre interfaz, lógica de negocio y persistencia.
-- Actualizar los requisitos, casos de prueba y evidencias cuando cambie el comportamiento de la aplicación.
-
-## 8. Conclusión
-
-CamScanner reúne funciones que requieren especial atención desde la perspectiva de calidad: reconocimiento OCR en condiciones variables, operación sin conexión, persistencia local, integridad entre lotes y documentos y generación correcta de archivos Excel. Los riesgos identificados permiten orientar las pruebas y las acciones de mantenimiento. La valoración definitiva de la calidad debe basarse en resultados medidos, defectos registrados y evidencias obtenidas durante la ejecución del plan de pruebas.
+## 9. Conclusión
+La revisión confirma una base inicial MAUI y persistencia SQLite con modelos de lote y documento. En los archivos inspeccionados no se evidencian la interfaz de digitalización, OCR, captura/importación, CRUD completo ni exportación Excel. Por ello, la documentación debe reflejar una implementación parcial respecto al alcance acordado. La calidad final requiere completar las funciones, ejecutar las pruebas y registrar evidencias.

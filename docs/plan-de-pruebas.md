@@ -1,86 +1,75 @@
 # Plan de pruebas — CamScanner
 
 ## 1. Objetivo
+Definir casos para verificar captura/importación, OCR local, selección y corrección, gestión de lotes/documentos, SQLite y exportación Excel. Este documento diseña pruebas; no informa resultados ejecutados.
 
-Definir los casos de prueba para verificar las funcionalidades de CamScanner: captura e importación de documentos, OCR local, selección y corrección de información, gestión de lotes y documentos, persistencia SQLite y exportación a Excel.
+## 2. Estado inicial
+Todos los casos están **Pendientes de ejecución**. La revisión estática identificó configuración MAUI, modelos `Lote` y `Documento`, creación de tablas SQLite, consulta de lotes e inserción/actualización de lotes. La pantalla principal sigue siendo la plantilla MAUI y la búsqueda realizada no encontró referencias a OCR, cámara, selección de archivos o Excel.
 
-Este documento contiene el diseño inicial de pruebas. El estado de ejecución debe actualizarse únicamente después de ejecutar cada caso y registrar evidencia.
-
-## 2. Alcance
-
-Se contemplan pruebas funcionales, de persistencia, de funcionamiento sin conexión, de manejo de errores y de exportación. Las pruebas deben ejecutarse en un dispositivo Android o emulador compatible con la configuración real del proyecto.
-
-## 3. Técnicas de prueba
-
-- **Partición de equivalencia:** agrupar entradas que deberían producir un comportamiento equivalente; por ejemplo, imágenes compatibles y no compatibles.
-- **Análisis de valores límite:** comprobar tamaños, cantidades y longitudes cercanas a los límites definidos por la aplicación.
-- **Pruebas de flujo:** ejecutar secuencias completas desde la captura o importación hasta el guardado y la exportación.
-- **Pruebas de persistencia:** cerrar y volver a abrir la aplicación para comprobar que los datos continúan almacenados.
-- **Pruebas negativas:** provocar entradas inválidas, permisos denegados y fallos controlados para verificar el manejo de errores.
+## 3. Técnicas
+- Partición de equivalencia: imágenes compatibles/no compatibles y datos válidos/no válidos.
+- Valores límite: tamaños, cantidades y longitudes de campos.
+- Pruebas de flujo: captura/importación, OCR, revisión, guardado y exportación.
+- Persistencia: cerrar y reabrir la aplicación.
+- Pruebas negativas: permisos denegados, imágenes sin texto y errores de almacenamiento/exportación.
 
 ## 4. Casos de prueba
 
-Estado inicial de todos los casos: **Pendiente de ejecución**. No se reportan resultados sin evidencia.
-
-| ID | Requisito | Escenario / pasos resumidos | Resultado esperado | Estado |
+| ID | Requisito | Escenario | Resultado esperado | Estado |
 |---|---|---|---|---|
-| CP-01 | RF-01 | Conceder permiso de cámara y capturar un documento. | La fotografía se captura y queda disponible en el flujo de trabajo. | Pendiente |
-| CP-02 | RF-01 | Denegar el permiso de cámara e intentar capturar. | La aplicación informa que no puede acceder a la cámara y no se cierra inesperadamente. | Pendiente |
-| CP-03 | RF-02 | Importar una imagen compatible desde el dispositivo. | La imagen se incorpora correctamente. | Pendiente |
-| CP-04 | RF-02 | Intentar importar una selección vacía o cancelar el selector. | La aplicación conserva el estado actual y no agrega elementos incorrectos. | Pendiente |
-| CP-05 | RF-03 | Procesar una imagen nítida con texto legible y desactivar la conexión a Internet. | El OCR reconoce el texto disponible sin depender de Internet. | Pendiente |
-| CP-06 | RF-03 | Procesar una imagen borrosa, inclinada o sin texto. | La aplicación presenta el resultado posible o informa que no pudo reconocer texto; no se bloquea. | Pendiente |
-| CP-07 | RF-04 | Ejecutar OCR sobre una imagen con texto conocido. | El texto detectado se muestra para revisión. | Pendiente |
-| CP-08 | RF-05 | Seleccionar algunos datos detectados y continuar. | Solo los datos seleccionados se conservan para el siguiente paso. | Pendiente |
-| CP-09 | RF-06 | Modificar un dato reconocido y guardar los cambios. | Se muestra y conserva el valor corregido. | Pendiente |
-| CP-10 | RF-07 | Crear un lote con datos válidos. | El lote se registra y aparece en la consulta. | Pendiente |
-| CP-11 | RF-08 | Consultar los lotes registrados. | Se muestran los lotes existentes con información coherente. | Pendiente |
-| CP-12 | RF-09 | Modificar los datos de un lote existente. | Los cambios se guardan y aparecen al volver a consultar. | Pendiente |
-| CP-13 | RF-10 | Eliminar un lote sin documentos asociados. | El lote deja de aparecer en la consulta y la aplicación confirma o informa el resultado. | Pendiente |
-| CP-14 | RF-10 | Intentar eliminar un lote que contiene documentos asociados. | Se aplica la regla de integridad definida por el sistema y se informa el resultado. | Pendiente |
-| CP-15 | RF-11 | Registrar un documento y asociarlo a un lote. | El documento queda guardado y relacionado con el lote seleccionado. | Pendiente |
-| CP-16 | RF-12 | Consultar los documentos de un lote. | Se muestran los documentos que corresponden a ese lote. | Pendiente |
-| CP-17 | RF-13 | Editar información de un documento existente. | Los cambios se guardan y se visualizan al consultar nuevamente. | Pendiente |
-| CP-18 | RF-14 | Eliminar un documento existente. | El documento deja de aparecer en la consulta correspondiente. | Pendiente |
-| CP-19 | RF-15 | Guardar un lote y documentos, cerrar la aplicación y abrirla nuevamente. | Los registros persisten en SQLite. | Pendiente |
-| CP-20 | RF-16 | Exportar a Excel la información de un documento. | Se genera un archivo Excel con los datos seleccionados del documento. | Pendiente |
-| CP-21 | RF-17 | Exportar a Excel un lote con varios documentos. | El archivo incluye la información de los documentos del lote y permite identificar su contenido. | Pendiente |
-| CP-22 | RF-18 | Provocar un error controlado durante OCR o exportación. | Se informa el error y la aplicación no pierde información previamente guardada. | Pendiente |
-| CP-23 | RNF-03 | Ejecutar el flujo de OCR con el dispositivo sin conexión. | El reconocimiento local funciona sin Internet. | Pendiente |
-| CP-24 | RNF-04 | Guardar información, cerrar forzosamente la aplicación y volver a abrirla. | Los datos confirmados antes del cierre continúan disponibles. | Pendiente |
-| CP-25 | RNF-02 | Procesar un conjunto representativo de imágenes y observar la respuesta de la interfaz. | La operación termina sin bloqueos prolongados ni cierre inesperado. Registrar dispositivo, cantidad y duración. | Pendiente |
-| CP-26 | RNF-10 | Abrir el archivo Excel exportado y revisar sus filas y columnas. | Los datos corresponden a la selección o lote exportado y son legibles. | Pendiente |
+| CP-01 | RF-01 | Capturar fotografía con permiso concedido. | Imagen capturada y disponible. | Pendiente |
+| CP-02 | RF-01 | Denegar permiso de cámara. | Mensaje claro, sin cierre inesperado. | Pendiente |
+| CP-03 | RF-02 | Importar imagen compatible. | Imagen incorporada al flujo. | Pendiente |
+| CP-04 | RF-02 | Cancelar selector de imágenes. | Se conserva el estado actual. | Pendiente |
+| CP-05 | RF-03 | Procesar imagen legible sin Internet. | OCR local reconoce texto sin conexión. | Pendiente |
+| CP-06 | RF-03 | Procesar imagen borrosa o sin texto. | Se informa resultado parcial o ausencia de texto. | Pendiente |
+| CP-07 | RF-04 | Revisar resultado OCR. | Texto reconocido visible. | Pendiente |
+| CP-08 | RF-05 | Seleccionar algunos datos. | Se conservan solo los datos elegidos. | Pendiente |
+| CP-09 | RF-06 | Corregir un dato reconocido. | Valor corregido se conserva. | Pendiente |
+| CP-10 | RF-07 | Crear lote válido. | Lote registrado. | Pendiente |
+| CP-11 | RF-08 | Consultar lotes. | Se muestran lotes existentes. | Pendiente |
+| CP-12 | RF-09 | Modificar lote. | Cambios guardados. | Pendiente |
+| CP-13 | RF-10 | Eliminar lote sin documentos. | Lote deja de aparecer. | Pendiente |
+| CP-14 | RF-10 | Eliminar lote con documentos asociados. | Se aplica regla de integridad definida. | Pendiente |
+| CP-15 | RF-11 | Crear documento y asociarlo a lote. | Documento registrado y relacionado. | Pendiente |
+| CP-16 | RF-12 | Consultar documentos de un lote. | Se muestran los documentos correspondientes. | Pendiente |
+| CP-17 | RF-13 | Modificar documento. | Cambios guardados. | Pendiente |
+| CP-18 | RF-14 | Eliminar documento. | Documento deja de aparecer. | Pendiente |
+| CP-19 | RF-15 | Guardar y reiniciar aplicación. | Registros confirmados persisten en SQLite. | Pendiente |
+| CP-20 | RF-16 | Exportar documento individual. | Excel con datos seleccionados. | Pendiente |
+| CP-21 | RF-17 | Exportar lote. | Excel con datos de documentos del lote. | Pendiente |
+| CP-22 | RF-18 | Provocar error controlado. | Mensaje claro y datos confirmados conservados. | Pendiente |
+| CP-23 | RNF-03 | Ejecutar OCR sin conexión. | OCR funciona sin Internet. | Pendiente |
+| CP-24 | RNF-04 | Reiniciar después de guardar. | Datos disponibles nuevamente. | Pendiente |
+| CP-25 | RNF-02 | Procesar conjunto representativo de imágenes. | Duración registrada y sin bloqueos inaceptables. | Pendiente |
+| CP-26 | RNF-10 | Abrir archivo Excel generado. | Datos legibles y correspondientes a la selección. | Pendiente |
 
 ## 5. Registro de ejecución
 
-Completar esta tabla después de ejecutar los casos:
-
-| ID de prueba | Fecha | Dispositivo / emulador | Resultado (Aprobado / Fallido) | Evidencia o incidencia |
+| ID | Fecha | Dispositivo/emulador | Resultado | Evidencia/incidencia |
 |---|---|---|---|---|
-| CP-__ | __/__/____ | __ | __ | __ |
+| CP-__ | __/__/____ | __ | Aprobado/Fallido | __ |
 
 ## 6. Criterios de entrada
-
-- Aplicación compilada e instalada en un dispositivo o emulador Android compatible.
-- Permisos y recursos necesarios disponibles para los escenarios que los requieren.
-- Datos de prueba preparados, evitando utilizar información personal o documentos sensibles reales.
-- Base de datos de prueba en un estado conocido.
+- Aplicación compilada e instalada en dispositivo/emulador Android compatible.
+- Datos de prueba preparados.
+- Permisos y recursos disponibles.
+- Imágenes de referencia con texto conocido para OCR.
+- Documentos de prueba para exportación.
 
 ## 7. Criterios de salida
-
-- Todos los casos definidos para la entrega han sido ejecutados o se ha justificado cuáles quedan pendientes.
-- Los resultados y evidencias se han registrado.
-- Los defectos encontrados tienen una descripción, prioridad y estado.
-- Los fallos críticos que impidan el flujo principal han sido corregidos o reportados explícitamente.
+- Casos ejecutados y resultados registrados.
+- Evidencias asociadas a los casos.
+- Defectos clasificados.
+- Fallos críticos corregidos o reportados.
 
 ## 8. Evidencias recomendadas
+- Captura o importación de imagen.
+- OCR ejecutado sin conexión.
+- Selección y corrección de datos.
+- CRUD de lotes y documentos.
+- Persistencia después de reiniciar.
+- Archivo Excel generado y contenido revisado.
+- Manejo de errores y permisos denegados.
 
-- Captura de la fotografía o imagen importada.
-- Resultado de OCR con el dispositivo sin conexión.
-- Selección y edición de los datos reconocidos.
-- Creación, consulta, modificación y eliminación de lotes y documentos.
-- Comprobación de persistencia después de reiniciar la aplicación.
-- Archivo Excel generado y evidencia de su contenido.
-- Registro de errores controlados y mensajes presentados al usuario.
-
-Las evidencias deben almacenarse en una ubicación acordada por el equipo y referenciarse desde este documento o desde el informe de calidad.
+No marcar un caso como aprobado sin evidencia de ejecución.

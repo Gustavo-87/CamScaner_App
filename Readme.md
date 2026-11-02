@@ -1,172 +1,137 @@
-# CamScanner — Aplicación móvil para digitalización y extracción de información
+# CamScanner — Aplicación móvil Android
 
-## 1. Descripción del proyecto
+## Descripción
+CamScanner es un proyecto Android desarrollado con .NET 10, .NET MAUI y C#. El alcance acordado contempla capturar o importar fotografías de documentos, reconocer texto mediante OCR local, seleccionar y corregir la información detectada, organizar documentos por lotes, guardar datos en SQLite y exportarlos a Excel.
 
-**CamScanner** es una aplicación móvil para dispositivos Android desarrollada desde cero con **.NET 10, .NET MAUI y C#**. Su propósito es facilitar la digitalización de documentos físicos y la extracción de información de sus fotografías, sin depender de una conexión a Internet para el reconocimiento de texto.
+**Estado de la versión revisada:** el repositorio contiene la configuración inicial de MAUI, los modelos `Lote` y `Documento` y una capa SQLite limitada. La pantalla principal sigue siendo la plantilla de MAUI. La búsqueda realizada en `src` no encontró referencias a OCR, cámara, importación de imágenes ni Excel. Por tanto, las funciones del alcance no deben presentarse como implementadas sin código y evidencia adicionales.
 
-La aplicación permite capturar fotografías o importar imágenes de documentos, procesarlas mediante reconocimiento óptico de caracteres (OCR) local, revisar la información detectada y seleccionar o corregir los datos que se necesitan. Posteriormente, los documentos pueden organizarse en lotes, almacenarse localmente y exportarse a archivos de Excel.
+## Objetivo general
+Desarrollar una aplicación Android que permita digitalizar documentos, reconocer su contenido mediante OCR local, revisar y corregir la información, organizarla en lotes, almacenarla localmente y exportarla a Excel.
 
-El proyecto busca reducir la digitación manual, facilitar la organización de documentos y agilizar la preparación de información para su posterior uso.
+## Funcionalidades y estado comprobado
 
-## 2. Objetivo general
-
-Desarrollar una aplicación móvil Android que permita capturar o importar documentos, reconocer su contenido mediante OCR local, gestionar la información extraída y exportarla a Excel, manteniendo los datos almacenados localmente.
-
-## 3. Objetivos específicos
-
-- Facilitar la captura de documentos mediante la cámara o su importación desde el dispositivo.
-- Reconocer texto de las imágenes mediante un motor OCR que funcione localmente, sin requerir Internet para el procesamiento.
-- Permitir al usuario seleccionar, corregir y editar la información reconocida.
-- Organizar documentos e información relacionada en lotes.
-- Persistir los datos de la aplicación en una base de datos SQLite.
-- Permitir las operaciones de creación, consulta, modificación y eliminación de lotes y documentos.
-- Exportar la información seleccionada a Excel, tanto de forma individual como por lotes.
-
-## 4. Funcionalidades y estado del proyecto
-
-El estado indicado para esta entrega corresponde a la información suministrada por el equipo: la aplicación se encuentra funcionalmente terminada. La documentación académica se está organizando por entregas.
-
-| Funcionalidad | Descripción | Estado informado |
-|---|---|---|
-| Captura de documentos | Tomar fotografías utilizando la cámara del dispositivo Android. | Implementado |
-| Importación de documentos | Seleccionar e importar imágenes desde el dispositivo. | Implementado |
-| Reconocimiento OCR local | Detectar texto de las imágenes sin necesitar conexión a Internet para el procesamiento OCR. | Implementado |
-| Selección de información | Elegir los datos reconocidos que se desean conservar. | Implementado |
-| Corrección de información | Editar y corregir los datos extraídos antes de guardarlos o exportarlos. | Implementado |
-| Organización por lotes | Agrupar documentos para facilitar su administración. | Implementado |
-| Persistencia local | Guardar la información en SQLite. | Implementado |
-| CRUD de lotes | Crear, consultar, modificar y eliminar lotes. | Implementado |
-| CRUD de documentos | Crear, consultar, modificar y eliminar documentos. | Implementado |
-| Exportación individual | Exportar a Excel la información correspondiente a un documento. | Implementado |
-| Exportación por lotes | Exportar a Excel la información de los documentos de un lote. | Implementado |
-
-> **Nota sobre la verificación:** “Implementado” refleja el estado funcional informado por el equipo. No significa por sí solo que exista evidencia de ejecución o que todos los casos de prueba estén aprobados. Los resultados de las pruebas deben registrarse en `docs/plan-de-pruebas.md` y las observaciones de calidad en `docs/informe-calidad.md`.
-
-## 5. Tecnologías utilizadas
-
-| Tecnología | Uso en el proyecto |
+| Funcionalidad | Estado según archivos revisados |
 |---|---|
-| .NET 10 | Plataforma de desarrollo y ejecución. |
-| .NET MAUI | Construcción de la aplicación móvil. |
-| C# | Lenguaje de programación. |
-| SQLite | Almacenamiento local de lotes, documentos e información relacionada. |
-| OCR local | Reconocimiento óptico de caracteres a partir de las imágenes, sin requerir Internet para el procesamiento. |
-| Excel | Formato de exportación de la información extraída. |
-| Git y GitHub | Control de versiones y alojamiento del repositorio. |
-| Trello | Organización y seguimiento de actividades del equipo. |
+| Proyecto .NET 10 / MAUI Android | Configuración presente en `src/CamScanner.csproj`. |
+| Modelo Lote | Implementado en `src/Models/Lote.cs`. |
+| Modelo Documento | Implementado en `src/Models/Documento.cs`. |
+| Inicialización SQLite y creación de tablas | Implementada para `Lote` y `Documento`. |
+| Consultar lotes | Implementado mediante `ObtenerLotesAsync()`. |
+| Insertar/actualizar lotes | Implementado mediante `GuardarLoteAsync()`. |
+| Captura de fotografías | No encontrada en los archivos revisados. |
+| Importación de imágenes | No encontrada en los archivos revisados. |
+| OCR local | No encontrado; tampoco se identificó dependencia OCR en el `.csproj`. |
+| Selección y corrección de texto | No encontrada en los archivos revisados. |
+| CRUD completo de lotes | Parcial: consulta, inserción y actualización; no se encontró eliminación. |
+| CRUD de documentos | Pendiente en la capa revisada: existe el modelo, pero no operaciones de persistencia. |
+| Exportación Excel | No encontrada; no se identificó dependencia Excel. |
+| Pruebas automatizadas | No se identificó carpeta/proyecto `tests` en el listado compartido. |
 
-La biblioteca o motor OCR y el componente utilizado para generar archivos Excel deben identificarse con sus nombres y versiones exactas en la documentación técnica del proyecto o en el archivo de dependencias. No se asignan nombres de paquetes en este README porque no fueron especificados en la información suministrada.
+Estos estados describen la rama revisada y los archivos suministrados; no equivalen a una auditoría exhaustiva de todo comportamiento posible.
 
-## 6. Equipo de trabajo y roles
+## Tecnologías identificadas
 
-| Integrante | Rol | Responsabilidad principal |
+| Tecnología | Uso / evidencia |
+|---|---|
+| .NET 10 | Marcos objetivo `net10.0-android` y otros destinos condicionados. |
+| .NET MAUI | Interfaz y estructura de aplicación (`UseMaui=true`). |
+| C# | Lenguaje de los archivos fuente. |
+| SQLite | `sqlite-net-pcl` versión `1.11.285`. |
+| Git / GitHub | Control de versiones. |
+| Trello | Seguimiento de tareas; agregar URL real del tablero. |
+| OCR local | Requerido por el alcance; no identificado en el código revisado. |
+| Excel | Formato requerido; biblioteca no identificada en el código revisado. |
+
+## Equipo y roles
+
+| Integrante | Rol | Responsabilidad |
 |---|---|---|
-| Gustavo Piedrahita | Líder técnico | Coordinar el alcance, la arquitectura y la integración de los cambios del proyecto. |
-| Javier Serna | Responsable de pruebas | Diseñar los casos de prueba, ejecutar las verificaciones y registrar sus resultados. |
-| Richard Prado | Responsable de calidad y documentación | Revisar la calidad del producto, registrar defectos, proponer acciones de mantenimiento y mantener actualizada la documentación y las evidencias. |
+| Gustavo Piedrahita | Líder técnico | Coordinar alcance, arquitectura e integración. |
+| Javier Serna | Responsable de pruebas | Diseñar y ejecutar pruebas y registrar resultados. |
+| Richard Prado | Responsable de calidad y documentación | Revisar calidad, registrar defectos y mantener documentación y evidencias. |
 
-Los roles representan la responsabilidad principal de cada integrante. El equipo comparte la responsabilidad sobre el producto y su funcionamiento.
-
-## 7. Estructura del repositorio
-
-La estructura de documentación y código del repositorio se organiza de la siguiente manera:
+## Estructura identificada
 
 ```text
 CamScanner_App/
-├── README.md
+├── Readme.md
 ├── docs/
 │   ├── especificacion.md
-│   ├── plan-de-pruebas.md
-│   └── informe-calidad.md
-├── src/
-│   └── (código fuente de la aplicación .NET MAUI)
-└── tests/
-    └── (pruebas automatizadas)
+│   ├── informe-calidad.md
+│   └── plan-de-pruebas.md
+└── src/
+    ├── CamScanner.csproj
+    ├── App.xaml
+    ├── App.xaml.cs
+    ├── AppShell.xaml
+    ├── AppShell.xaml.cs
+    ├── MainPage.xaml
+    ├── MainPage.xaml.cs
+    ├── MauiProgram.cs
+    ├── Data/CamScannerDatabase.cs
+    ├── Models/Documento.cs
+    ├── Models/Lote.cs
+    ├── Platforms/Android/
+    └── Resources/
 ```
 
-- `README.md`: descripción general, tecnologías, integrantes, estructura e instrucciones de ejecución.
-- `docs/especificacion.md`: requisitos funcionales, no funcionales y criterios de aceptación.
-- `docs/plan-de-pruebas.md`: casos de prueba y registro de resultados.
-- `docs/informe-calidad.md`: riesgos, aspectos de calidad, defectos y acciones de mantenimiento.
-- `src/`: código fuente de la aplicación móvil.
-- `tests/`: proyectos y recursos de pruebas automatizadas.
+La estructura se basa en el listado `git ls-files` compartido. No se incluye `tests/` porque no apareció en ese listado.
 
-Los nombres internos de carpetas y proyectos dentro de `src/` y `tests/` deben ajustarse a los que existan realmente en el repositorio.
-
-## 8. Requisitos previos
-
-Para compilar y ejecutar el proyecto se requiere:
-
-- Windows compatible con el desarrollo Android mediante .NET MAUI.
+## Requisitos previos
+- Windows 10/11 con entorno de desarrollo Android.
 - .NET 10 SDK.
-- Visual Studio 2022 actualizado con la carga de trabajo **Desarrollo de la interfaz de usuario de aplicaciones multiplataforma de .NET** y los componentes de Android, o una instalación equivalente de .NET MAUI.
-- Android SDK y las herramientas de compilación requeridas por la versión de .NET MAUI utilizada.
-- Un dispositivo Android con depuración USB habilitada o un emulador Android configurado.
+- Visual Studio 2022 actualizado con la carga de trabajo **Desarrollo de la interfaz de usuario de aplicaciones multiplataforma de .NET** y componentes Android, o entorno .NET MAUI equivalente.
+- Android SDK y herramientas requeridas.
+- Emulador Android o dispositivo con depuración USB.
 
-La versión concreta de Android mínima y el nivel de API objetivo deben consultarse en la configuración del proyecto (`Platforms/Android/AndroidManifest.xml` y el archivo `.csproj`, según corresponda).
+El `.csproj` declara `net10.0-android` y Android API mínima 21. La compatibilidad debe validarse en el entorno y dispositivo objetivo.
 
-## 9. Instalación y ejecución
+## Instalación, compilación y ejecución
 
-### Opción A. Desde Visual Studio
+Clonar el repositorio:
 
-1. Clonar el repositorio:
+```bash
+git clone https://github.com/Gustavo-87/CamScanner_App.git
+cd CamScanner_App
+```
 
-   ```bash
-   git clone https://github.com/Gustavo-87/CamScanner_App
-   ```
+Restaurar cargas de trabajo y dependencias:
 
-2. Abrir la solución `.sln` o el proyecto `.csproj` de la aplicación en Visual Studio.
-3. Verificar que esté instalada la carga de trabajo de .NET MAUI y el soporte de Android.
-4. Restaurar los paquetes NuGet de la solución.
-5. Seleccionar el destino Android: emulador o dispositivo físico conectado.
-6. Compilar y ejecutar el proyecto desde Visual Studio.
+```bash
+dotnet workload restore src/CamScanner.csproj
+dotnet restore src/CamScanner.csproj
+```
 
-### Opción B. Desde la terminal
+Si falta la carga MAUI Android:
 
-1. Clonar el repositorio y entrar a la carpeta del proyecto:
+```bash
+dotnet workload install maui-android
+```
 
-   ```bash
-   git clone https://github.com/Gustavo-87/CamScanner_App
-   cd CamScanner_App
-   ```
+Compilar:
 
-2. Restaurar las dependencias:
+```bash
+dotnet build src/CamScanner.csproj -f net10.0-android
+```
 
-   ```bash
-   dotnet restore
-   ```
+Para ejecutar, abrir `src/CamScanner.csproj` en Visual Studio, seleccionar un emulador o dispositivo Android y pulsar **Iniciar / Run**.
 
-3. Comprobar los SDK y las cargas de trabajo disponibles:
+Publicar en Release (según configuración local):
 
-   ```bash
-   dotnet --info
-   dotnet workload list
-   ```
+```bash
+dotnet publish src/CamScanner.csproj -f net10.0-android -c Release
+```
 
-4. Compilar para Android, reemplazando la ruta por la del archivo `.csproj` real:
+La compilación no implica que OCR, captura o exportación estén disponibles: no se encontraron en la versión inspeccionada.
 
-   ```bash
-   dotnet build src/<CamScanner_Appo>/<CamScanner_App>.csproj -f net10.0-android
-   ```
+## Gestión del proyecto
+El equipo utiliza Trello para asignar actividades, registrar avances, adjuntar evidencias y relacionar los cambios con commits.
 
-5. Ejecutar o desplegar en un emulador/dispositivo Android configurado. Desde Visual Studio puede seleccionarse el dispositivo y utilizar **Iniciar**. Para despliegues por terminal, seguir la configuración de Android y el perfil de ejecución definidos por el proyecto.
+**Tablero Trello:** pendiente de agregar el enlace real.
 
-> Los comandos anteriores son una guía general. La ruta del `.csproj`, el identificador del proyecto y los parámetros de despliegue deben ajustarse a los nombres reales del repositorio. No se debe asumir que `dotnet run` funciona directamente para todos los proyectos MAUI Android.
-
-## 10. Gestión del proyecto
-
-El seguimiento de tareas, responsables, prioridades y avances se realiza mediante Trello.
-
-**Tablero de Trello:** (https://trello.com/b/5W9InNH9/camscaner-trabajo-final)
-
-
-
-## 11. Documentación complementaria
-
-- [Especificación de requisitos](docs/especificacion.md)
-- [Plan de pruebas](docs/plan-de-pruebas.md)
+## Documentación
+- [Especificación](docs/especificacion.md)
 - [Informe de calidad](docs/informe-calidad.md)
+- [Plan de pruebas](docs/plan-de-pruebas.md)
 
-## 12. Estado de la documentación
-
-La aplicación se reporta como funcionalmente terminada. La documentación se desarrolla y completa por etapas de acuerdo con las entregas de Ingeniería de Software II. Los estados de implementación y los resultados de verificación se mantienen diferenciados para evitar presentar como probadas funcionalidades que aún no tengan evidencia registrada.
+Actualizar esta documentación cuando se incorporen funciones. Para marcar una función como implementada debe identificarse el componente/archivo; para marcarla como verificada también debe registrarse el caso ejecutado y su evidencia.
